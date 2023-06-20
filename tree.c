@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "asd.h"
+#include "tree.h"
 #define ARQUIVO_SAIDA "saida.dot"
 
 lex_value_t *create_lex_value(const int line, const char *token_type, const char *token_value)
@@ -81,7 +81,7 @@ static void _asd_print_graphviz (FILE *foutput, asd_tree_t *tree)
 {
   int i;
   if (tree != NULL){
-    fprintf(foutput, "  %ld [ label=\"%ld\" ];\n", (long)tree, (long)tree->label);
+    fprintf(foutput, "  %ld [ label=\"%s\" ];\n", (long)tree, tree->lex_val->token_value);
     for (i = 0; i < tree->number_of_children; i++){
       fprintf(foutput, "  %ld -> %ld;\n", (long)tree, (long)tree->children[i]);
       _asd_print_graphviz(foutput, tree->children[i]);
