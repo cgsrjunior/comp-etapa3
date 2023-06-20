@@ -32,6 +32,9 @@ extern int get_line_number(void);
 %token TK_LIT_TRUE
 %token TK_ERRO
 
+%union {
+  lex_value_t valor_lexico;
+}
 
 %%
 
