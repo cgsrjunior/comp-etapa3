@@ -7,7 +7,7 @@
 lex_value_t *create_lex_value(const int line, const char *token_type, const char *token_value)
 {
     lex_value_t *ret = NULL;
-    ret = calloc(1,sizeof(asd_tree_t));
+    ret = calloc(1,sizeof(lex_value_t));
     if(ret != NULL)
     {
         ret->line = line;
