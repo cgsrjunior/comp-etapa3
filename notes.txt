@@ -1,0 +1,8 @@
+Class notes: kickoff comp expr_3
+
+regras podem ter acoes:
+
+decl: type ID list { printf("Sucesso!\n"); }
+
+E: E '+' E {$$ = $1 + $3}
+| INT_LIT {$$ = INT_VAL};
