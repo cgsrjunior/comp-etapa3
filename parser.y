@@ -8,6 +8,7 @@
 int yylex(void);
 int yyerror (const char *message);
 extern int get_line_number(void);
+extern void* arvore;
 %}
 %define parse.error verbose
 
@@ -32,33 +33,44 @@ extern int get_line_number(void);
 %token TK_LIT_TRUE
 %token TK_ERRO
 
+%union {
+  lex_value_t valor_lexico;
+}
 
 %%
 
-programa    : list_decl
+programa    : list_decl { $$ = $1; arvore = asd_new($$); }
             ;            
         
-list_decl   : decl list_decl
-            |
+list_decl   : decl list_decl {
+                  if($$!=NULL){
+                        $$ = $1;
+                        $$ = add_child($$,$2);
+                  }
+                  else{
+                        $$ = $2;
+                  }
+              }
+            | { $$ = NULL}
             ;
 
-decl        : var
-            | func
+decl        : var { $$ = $1; }
+            | func { $$ = $1; }
             ;
 
-var         : type list_id ';'
+var         : type list_id ';' { $$ = NULL; } 
             ;
 
-list_id     : list_id ',' id_label
-            | id_label
+list_id     : list_id ',' id_label { $$= NULL }
+            | id_label { $$ = NULL; }
             ;
 
-type        : TK_PR_INT
-            | TK_PR_FLOAT
-            | TK_PR_BOOL
+type        : TK_PR_INT { $$ = NULL; } 
+            | TK_PR_FLOAT { $$ = NULL; }
+            | TK_PR_BOOL { $$ = NULL; }
             ;
 
-func        : header body
+func        : header body { $$ = $1 $2; }
             ;
 
 header      : name_func '(' list_param ')' TK_OC_MAP type
@@ -188,15 +200,15 @@ id_atrib        : id_label TK_OC_LE lit
                 | id_label
                 ;
 
-lit             : TK_LIT_INT
-                | TK_LIT_FLOAT
-                | TK_LIT_TRUE
-                | TK_LIT_FALSE
+lit             : TK_LIT_INT { $$ = $1; }
+                | TK_LIT_FLOAT { $$ = $1; }
+                | TK_LIT_TRUE { $$ = $1; }
+                | TK_LIT_FALSE { $$ = $1; }
                 ;
 
-id_label: TK_IDENTIFICADOR;
-name_func: TK_IDENTIFICADOR;
-id_param: type TK_IDENTIFICADOR;
+id_label: TK_IDENTIFICADOR { $$ = $1; };
+name_func: TK_IDENTIFICADOR { $$ = $1; };
+id_param: type TK_IDENTIFICADOR { $$ = $1; };
 
 %%
 int yyerror (const char *message)
