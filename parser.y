@@ -18,6 +18,7 @@ int yyerror (const char *message);
       AstNode* ast;
 }
 
+%define parse.error verbose
 
 %token<valor_lexico> TK_PR_INT
 %token<valor_lexico> TK_PR_FLOAT
