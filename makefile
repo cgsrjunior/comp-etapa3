@@ -6,7 +6,7 @@
 # Makefile for single compiler call
 
 FLAGS=-Wall -g
-COMP=g++ --std=c++20
+COMP=g++ -std=c++17
 
 etapa2: compile_font
 	${COMP} ${FLAGS} -o etapa3 lex.yy.o parser.tab.o tree.o main.o -lfl

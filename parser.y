@@ -3,7 +3,6 @@
 /* Cartões: 00270139 - 00228540 */
 
 %{
-#include "tree.hh"
 #include <iostream>
 #include <memory>
 extern int get_line_number(void);
@@ -12,10 +11,13 @@ int yylex(void);
 int yyerror (const char *message);
 %}
 
+%code requires{
+      #include <memory>
+      #include "tree.hh"
+}
 
 %union {
-      LexVal valor_lexico
-      AstNode* ast;
+      AstNode* valor_lexico;
 }
 
 %define parse.error verbose
@@ -42,48 +44,48 @@ int yyerror (const char *message);
 %token<valor_lexico> TK_ERRO
 %token<valor_lexico> '-' '!' '*' '/' '%' '+' '<' '>' '&' '|' '='
 
-%type<ast> programa
-%type<ast> list_decl
-%type<ast> decl
-%type<ast> var
-%type<ast> list_id
-%type<ast> type
-%type<ast> func
-%type<ast> header
-%type<ast> list_param
-%type<ast> body
-%type<ast> list_cmd
-%type<ast> cmd
-%type<ast> cmd_flux_ctrl
-%type<ast> cmd_func_call
-%type<ast> func_call_param
-%type<ast> unary_operand
-%type<ast> bin_sec_expr
-%type<ast> bin_thr_expr
-%type<ast> bin_fou_expr
-%type<ast> bin_fif_expr
-%type<ast> bin_six_expr
-%type<ast> bin_sev_expr
-%type<ast> expr
-%type<ast> expr_1
-%type<ast> expr_2
-%type<ast> expr_3
-%type<ast> expr_4
-%type<ast> expr_5
-%type<ast> unary_expr
-%type<ast> parenthesis_prec
-%type<ast> operand
-%type<ast> list_arg
-%type<ast> cmd_return
-%type<ast> cmd_atrib
-%type<ast> cmd_var
-%type<ast> atrib_var
-%type<ast> list_id_atrib
-%type<ast> id_atrib
-%type<ast> lit
-%type<ast> id_label
-%type<ast> name_func
-%type<ast> id_param
+%type<valor_lexico> programa
+%type<valor_lexico> list_decl
+%type<valor_lexico> decl
+%type<valor_lexico> var
+%type<valor_lexico> list_id
+%type<valor_lexico> type
+%type<valor_lexico> func
+%type<valor_lexico> header
+%type<valor_lexico> list_param
+%type<valor_lexico> body
+%type<valor_lexico> list_cmd
+%type<valor_lexico> cmd
+%type<valor_lexico> cmd_flux_ctrl
+%type<valor_lexico> cmd_func_call
+%type<valor_lexico> func_call_param
+%type<valor_lexico> unary_operand
+%type<valor_lexico> bin_sec_expr
+%type<valor_lexico> bin_thr_expr
+%type<valor_lexico> bin_fou_expr
+%type<valor_lexico> bin_fif_expr
+%type<valor_lexico> bin_six_expr
+%type<valor_lexico> bin_sev_expr
+%type<valor_lexico> expr
+%type<valor_lexico> expr_1
+%type<valor_lexico> expr_2
+%type<valor_lexico> expr_3
+%type<valor_lexico> expr_4
+%type<valor_lexico> expr_5
+%type<valor_lexico> unary_expr
+%type<valor_lexico> parenthesis_prec
+%type<valor_lexico> operand
+%type<valor_lexico> list_arg
+%type<valor_lexico> cmd_return
+%type<valor_lexico> cmd_atrib
+%type<valor_lexico> cmd_var
+%type<valor_lexico> atrib_var
+%type<valor_lexico> list_id_atrib
+%type<valor_lexico> id_atrib
+%type<valor_lexico> lit
+%type<valor_lexico> id_label
+%type<valor_lexico> name_func
+%type<valor_lexico> id_param
 
 %start programa
 
@@ -195,7 +197,7 @@ bin_fif_expr : TK_OC_NE {$$ = $1;}
 bin_six_expr: TK_OC_AND {$$ = $1;}
              ;
 
-bin_sev_expr: TK_OC_OR {$$ = $1}
+bin_sev_expr: TK_OC_OR {$$ = $1;}
              ;
 
 expr: expr_1 {$$ = $1;} 
@@ -247,7 +249,7 @@ cmd_return  : TK_PR_RETURN expr {$$ = $1; $$->add_child($2);}
 cmd_atrib   : id_label '=' expr {$$ = $2; $$->add_child($1); $$->add_child($3);}
             ;
 
-cmd_var     : atrib_var {$$ = $1}
+cmd_var     : atrib_var {$$ = $1;}
             ;
 
 atrib_var   : type list_id_atrib {$$ = $2;}
@@ -280,7 +282,7 @@ id_label: TK_IDENTIFICADOR {$$ = nullptr;}
 name_func: TK_IDENTIFICADOR {$$ = nullptr;}
          ;     
 
-id_param: type TK_IDENTIFICADOR {$$ = nullptr; delete $2}
+id_param: type TK_IDENTIFICADOR {$$ = nullptr; delete $2;}
         ;
 
 %%

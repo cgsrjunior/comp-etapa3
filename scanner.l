@@ -64,7 +64,7 @@ FALSE   "false"
     yylval.valor_lexico = nullptr;
     // Ignora caracteres que não irão para a arvore sintática
     if (find(invalid_chars.begin(), invalid_chars.end(), yytext[0]) == invalid_chars.end()) {
-        yylval.valor_lexico = new AstNode(yylineno, TkType::TK_SP, TkValue(yytext[0]));
+        yylval.valor_lexico = new AstNode(yylineno, TkType::TK_SP_CHAR, TkValue(yytext[0]));
     }
     return yytext[0]; 
     }
