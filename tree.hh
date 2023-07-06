@@ -24,33 +24,31 @@ struct LexValue {
     int line_number;
     TkType token_type;
     TkValue token_val;
-
-    LexValue(int line, TkType token_tp, TkValue value);
 };
 
 struct AstNode {
     public:
         LexValue lex;
         vector<shared_ptr<AstNode>> children;
+        bool func_call = false;
 
         //Constructor - create only node without child
         AstNode(int number, TkType token_tp, TkValue value);
 
-        //Destructor - free entire tree
-        ~AstNode();
-
         //Function to add child
         void add_child(AstNode *node);
 
-        //Function to print the tree
-        void print_tree(shared_ptr<AstNode> tree);
-
-        //Function to export the tree
-        void exporta(AstNode *tree);
-
         //Convert labels into string
-        string to_string(void);
+        string to_string();
+
+        void reg_func_call(bool value);
 };
 
 //Smart pointer for the tree
-typedef shared_ptr<AstNode> smart_node;
+typedef shared_ptr<AstNode> smart_pointer;
+
+//Function to export the tree
+void exporta(void* tree);
+
+//Function to print the tree
+void print_tree(shared_ptr<AstNode> tree);

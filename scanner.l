@@ -84,3 +84,7 @@ FALSE   "false"
 .			{ return TK_ERRO; }
 
 %%
+
+int get_line_number() {
+	return yylineno;
+}

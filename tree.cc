@@ -8,64 +8,67 @@ using namespace std;
 
 extern int yylineno;
 
-LexValue::LexValue(int line, TkType token_tp, TkValue value) {
-    this->line_number = line;
-    this->token_tp = token_tp;
-    this->token_val = value;
-}
-
 AstNode::AstNode(int number, TkType token_tp, TkValue value){
-    this->lex.line_number = line;
+    this->lex.line_number = number;
 	this->lex.token_type = token_tp;
 	this->lex.token_val = value;
 }
 
-AstNode::~AstNode()
-{
-	return nullptr;
-}
 
 void AstNode::add_child(AstNode* child) {
     if (child != nullptr) {
-        this->children.push_back(Node_p(child));
+        this->children.push_back(smart_pointer(child));
     }
 }
 
-void AstNode::print_tree(shared_ptr<AstNode> tree) {
-	cout << tree << " [label=\"" << tree->to_string() << "\"]" << endl;
-	
-	for (auto& child : arvore->children) {
-		cout << arvore << "," << child << endl;
-		print_arvore(child);
-	}
-}
-
-string AstNode::to_string(void) {
+string AstNode::to_string() {
+    stringstream ss;
+    string output;
     switch (this->lex.token_type) {
-        case TokenType::TK_SP_CHAR
-            return string(&get<char>(this->lex.token_val), 1);
-        case TokenType::TK_PR:
-        case TokenType::TK_OC:
-            return get<string>(this->lex.token_val); 
-        case TokenType::TK_ID:
-            if (this->is_func_call) {
-                return string("call ")+get<string>(this->lex.token_val);
+        case TkType::TK_SP_CHAR:
+            ss << get<char>(this->lex.token_val);
+            return output;
+        case TkType::TK_PR:
+        case TkType::TK_OC:
+            ss << get<string>(this->lex.token_val);
+            return output; 
+        case TkType::TK_ID:
+            if (this->func_call) {
+                ss << get<string>(this->lex.token_val);
+                return "call" + output;
             }
-            else return get<string>(this->lex.token_val);            
-        case TokenType::TK_LIT_INT:
-            return to_string(get<int>(this->lex.token_val));
-        case TokenType::TK_LIT_FLOAT:
-            return to_string(get<float>(this->lex.token_val));
-        case TokenType::TK_LIT_BOOL:
-            return to_string(get<bool>(this->lex.token_val));
+            else return output;            
+        case TkType::TK_LIT_INT:
+            ss << get<int>(this->lex.token_val);
+            return output;
+        case TkType::TK_LIT_FLOAT:
+            ss << get<float>(this->lex.token_val);
+            return output;
+        case TkType::TK_LIT_BOOL:
+            ss << get<bool>(this->lex.token_val);
+            return output;
         default:
             return "";
     }
 }
 
-void exporta(void* arvore) {
-    if (arvore != nullptr) {
-        auto arv = shared_ptr<Node>((Node*) arvore);
-        print_arvore(arv);
+void AstNode::reg_func_call(bool value){
+    this->func_call = value;
+}
+
+void print_tree(shared_ptr<AstNode> tree) {
+	cout << tree << " [label=\"" << tree->to_string() << "\"]" << endl;
+	
+	for (auto& child : tree->children) {
+		cout << tree << "," << child << endl;
+		print_tree(child);
+	}
+}
+
+void exporta(void* tree) {
+    if (tree != nullptr) {
+        auto arv = shared_ptr<AstNode>((AstNode*) tree);
+        print_tree(arv);
     }
 }
+
