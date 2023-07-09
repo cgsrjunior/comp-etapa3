@@ -39,7 +39,7 @@ struct AstNode {
         void add_child(AstNode *node);
 
         //Convert labels into string
-        string to_string();
+        string tostring();
 
         void reg_func_call(bool value);
 };

@@ -21,35 +21,33 @@ void AstNode::add_child(AstNode* child) {
     }
 }
 
-string AstNode::to_string() {
-    stringstream ss;
-    string output;
-    switch (this->lex.token_type) {
-        case TkType::TK_SP_CHAR:
-            ss << get<char>(this->lex.token_val);
-            return output;
-        case TkType::TK_PR:
-        case TkType::TK_OC:
-            ss << get<string>(this->lex.token_val);
-            return output; 
-        case TkType::TK_ID:
-            if (this->func_call) {
-                ss << get<string>(this->lex.token_val);
-                return "call" + output;
-            }
-            else return output;            
-        case TkType::TK_LIT_INT:
-            ss << get<int>(this->lex.token_val);
-            return output;
-        case TkType::TK_LIT_FLOAT:
-            ss << get<float>(this->lex.token_val);
-            return output;
-        case TkType::TK_LIT_BOOL:
-            ss << get<bool>(this->lex.token_val);
-            return output;
-        default:
-            return "";
-    }
+string AstNode::tostring() {
+        try{
+            switch (this->lex.token_type) {
+                case TkType::TK_SP_CHAR:
+                    return string(&get<char>(this->lex.token_val), 1);
+                case TkType::TK_PR:
+                case TkType::TK_OC:
+                    return string(get<string>(this->lex.token_val)); 
+                case TkType::TK_ID:
+                    if (this->func_call) {
+                        //return string("call ")+get<string>(this->lex.token_val);
+                    }
+                    else 
+                        //return get<string>(this->lex.token_val);          
+                case TkType::TK_LIT_INT:
+                    //return to_string(get<int>(this->lex.token_val));
+                case TkType::TK_LIT_FLOAT:
+                    //return to_string(get<float>(this->lex.token_val));
+                case TkType::TK_LIT_BOOL:
+                    //return to_string(get<bool>(this->lex.token_val));
+                default:
+                    return "";
+                }
+        }
+        catch (const std::bad_variant_access& ex){
+            std::cout << ex.what() << '\n';
+        }
 }
 
 void AstNode::reg_func_call(bool value){
@@ -57,7 +55,7 @@ void AstNode::reg_func_call(bool value){
 }
 
 void print_tree(shared_ptr<AstNode> tree) {
-	cout << tree << " [label=\"" << tree->to_string() << "\"]" << endl;
+	cout << tree << " [label=\"" << tree->tostring() << "\"]" << endl;
 	
 	for (auto& child : tree->children) {
 		cout << tree << "," << child << endl;
