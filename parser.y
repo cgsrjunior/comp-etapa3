@@ -270,7 +270,7 @@ list_id_atrib   : list_id_atrib ',' id_atrib{
                 ;
 
 id_atrib        : id_label TK_OC_LE lit {$$ = $2; $$->add_child($1); $$->add_child($3);}
-                | id_label {$$ = $1;}
+                | id_label {$$ = nullptr;}
                 ;
 
 lit             : TK_LIT_INT   {$$ = $1;}
