@@ -95,12 +95,18 @@ programa    : list_decl {$$ = $1; arvore = $$;}
             ;            
         
 list_decl   : decl list_decl {
-              if($$!=nullptr){
+              if($1!=nullptr && $2!=nullptr){
                   $$ = $1;
                   $$->add_child($2);
                }
-               else{
+               else if($1 !=nullptr){
+                  $$ = $1; 
+               }
+               else if ($2 != nullptr){
                   $$ = $2;
+               }
+               else{
+                  $$ = nullptr;
                }
             }
             | {$$ = nullptr;}
@@ -122,10 +128,7 @@ type        : TK_PR_INT   {$$ = nullptr;}
             | TK_PR_BOOL  {$$ = nullptr;}
             ;
 
-func        : header body {$$ = $1; $$->add_child($2);}
-            ;
-
-header      : name_func '(' list_param ')' TK_OC_MAP type {$$ = $5;}
+func        : name_func '(' list_param ')' TK_OC_MAP type body {$$ = $1; $$->add_child($7);}
             ;
 
 
@@ -226,7 +229,7 @@ expr_5: unary_expr                     {$$ = $1;}
       ;
 
 unary_expr: parenthesis_prec               {$$ = $1;}
-          | unary_operand parenthesis_prec {$$ = $1; $$->add_child($2);}
+          | unary_operand parenthesis_prec {$$ = $1; $$->add_child($2); /* cout << $2 << endl; */}
           ;
 
 parenthesis_prec    :  operand      {$$ = $1;}
@@ -276,10 +279,10 @@ lit             : TK_LIT_INT   {$$ = $1;}
                 | TK_LIT_FALSE {$$ = $1;}
                 ;
 
-id_label: TK_IDENTIFICADOR {$$ = nullptr;}
+id_label: TK_IDENTIFICADOR {$$ = $1;}
         ;      
 
-name_func: TK_IDENTIFICADOR {$$ = nullptr;}
+name_func: TK_IDENTIFICADOR {$$ = $1;}
          ;     
 
 id_param: type TK_IDENTIFICADOR {$$ = nullptr; delete $2;}

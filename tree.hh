@@ -18,12 +18,10 @@ enum class TkType {
 
 const vector<char> invalid_chars {',', ';', '(', ')', '{', '}', '[', ']'};
 
-typedef variant<string, int, float, char, bool> TkValue;
-
 struct LexValue {
     int line_number;
     TkType token_type;
-    TkValue token_val;
+    string token_val;
 };
 
 struct AstNode {
@@ -33,13 +31,13 @@ struct AstNode {
         bool func_call = false;
 
         //Constructor - create only node without child
-        AstNode(int number, TkType token_tp, TkValue value);
+        AstNode(int number, TkType token_tp, string value);
 
         //Function to add child
         void add_child(AstNode *node);
 
         //Convert labels into string
-        string tostring();
+        string formatstring();
 
         void reg_func_call(bool value);
 };
